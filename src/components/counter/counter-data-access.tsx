@@ -76,6 +76,7 @@ export function useCounterProgramAccount({ account }: { account: PublicKey }) {
       transactionToast(signature)
       await accounts.refetch()
     },
+    retry: false,
   })
 
   return {

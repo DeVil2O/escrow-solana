@@ -16,7 +16,7 @@ export function CounterCreate() {
 export function CounterList() {
   const { accounts, getProgramAccount } = useCounterProgram()
 
-  console.log({ accounts })
+  // console.log({ accounts })
 
   if (getProgramAccount.isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>
@@ -49,7 +49,7 @@ function CounterCard({ account }: { account: PublicKey }) {
 
   const isReleased = useMemo(() => accountQuery.data?.isReleased ?? false, [accountQuery.data?.isReleased])
 
-  console.log({ isReleased }, accountQuery.data)
+  console.log({ isReleased })
 
   return accountQuery.isLoading ? (
     <span className="loading loading-spinner loading-lg"></span>
