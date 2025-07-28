@@ -7,7 +7,7 @@ const links = [
   //
   { label: 'Home', path: '/' },
   { label: 'Account', path: '/account' },
-  { label: 'Counter Program', path: '/counter' },
+  { label: 'Escrow', path: '/escrow' },
 ]
 
 const LazyAccountIndex = lazy(() => import('@/components/account/account-index-feature'))
@@ -24,7 +24,7 @@ const routes: RouteObject[] = [
       { path: ':address', element: <LazyAccountDetail /> },
     ],
   },
-  { path: 'counter', element: <LazyCounter /> },
+  { path: 'escrow', element: <LazyCounter /> },
 ]
 
 console.log({ links, routes })

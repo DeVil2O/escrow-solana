@@ -2,69 +2,54 @@
 
 use anchor_lang::prelude::*;
 
-declare_id!("FqzkXZdwYjurnUKetJCAvaUw5WAqbwzU6gZEwydeEfqS");
+declare_id!("EcWG8mVNom4wmqWxXZSshhA2Udark9tt5ebZ6xSCbgAR");
 
 #[program]
-pub mod counter {
+pub mod escrow {
     use super::*;
 
-    pub fn close(_ctx: Context<CloseCounter>) -> Result<()> {
+    pub fn initialize(ctx: Context<Initialize>, amount: u64) -> Result<()> {
+        let escrow = &mut ctx.accounts.escrow;
+        escrow.initialiser = ctx.accounts.payer.key();
+        escrow.is_released = false;
+        escrow.amount = amount;
         Ok(())
     }
 
-    pub fn decrement(ctx: Context<Update>) -> Result<()> {
-        ctx.accounts.counter.count = ctx.accounts.counter.count.checked_sub(1).unwrap();
-        Ok(())
-    }
-
-    pub fn increment(ctx: Context<Update>) -> Result<()> {
-        ctx.accounts.counter.count = ctx.accounts.counter.count.checked_add(1).unwrap();
-        Ok(())
-    }
-
-    pub fn initialize(_ctx: Context<InitializeCounter>) -> Result<()> {
-        Ok(())
-    }
-
-    pub fn set(ctx: Context<Update>, value: u8) -> Result<()> {
-        ctx.accounts.counter.count = value.clone();
+    pub fn release(ctx: Context<Release>) -> Result<()> {
+        let escrow = &mut ctx.accounts.escrow;
+        escrow.is_released = true;
         Ok(())
     }
 }
 
+
 #[derive(Accounts)]
-pub struct InitializeCounter<'info> {
+pub struct Initialize<'info> {
+    #[account(init, payer = payer, space = 8 + 8, seeds = [b"escrow"], bump)]
+    pub escrow: Account<'info, Escrow>,
     #[account(mut)]
     pub payer: Signer<'info>,
-
-    #[account(
-  init,
-  space = 8 + Counter::INIT_SPACE,
-  payer = payer
-    )]
-    pub counter: Account<'info, Counter>,
     pub system_program: Program<'info, System>,
 }
-#[derive(Accounts)]
-pub struct CloseCounter<'info> {
-    #[account(mut)]
-    pub payer: Signer<'info>,
-
-    #[account(
-  mut,
-  close = payer, // close account and return lamports to payer
-    )]
-    pub counter: Account<'info, Counter>,
-}
 
 #[derive(Accounts)]
-pub struct Update<'info> {
-    #[account(mut)]
-    pub counter: Account<'info, Counter>,
+pub struct Release<'info> {
+    pub initialiser: Signer<'info>,
+    #[account(mut, has_one = initialiser)]
+    pub escrow: Account<'info, Escrow>,
 }
 
 #[account]
 #[derive(InitSpace)]
-pub struct Counter {
-    count: u8,
+pub struct Escrow {
+    pub initialiser: Pubkey,
+    pub amount: u64,
+    pub is_released: bool,
+}
+
+#[error_code]
+pub enum EscrowError {
+    #[msg("Escrow is already released")]
+    AlreadyReleased,
 }
