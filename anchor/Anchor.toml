@@ -5,15 +5,15 @@ package_manager = "yarn"
 resolution = true
 skip-lint = false
 
-[programs.localnet]
+[programs.devnet]
 escrow = "EcWG8mVNom4wmqWxXZSshhA2Udark9tt5ebZ6xSCbgAR"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
-wallet = "~/.config/solana/id.json"
+cluster = "devnet"
+wallet = "~/phantom-keypair.json"
 
 [scripts]
 test = "../node_modules/.bin/jest --preset ts-jest"

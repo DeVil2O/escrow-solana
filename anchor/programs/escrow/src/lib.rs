@@ -26,7 +26,7 @@ pub mod escrow {
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
-    #[account(init, payer = payer, space = 8 + 8, seeds = [b"escrow"], bump)]
+    #[account(init, payer = payer, space = Escrow::INIT_SPACE + 8, seeds = [b"escrow"], bump)]
     pub escrow: Account<'info, Escrow>,
     #[account(mut)]
     pub payer: Signer<'info>,

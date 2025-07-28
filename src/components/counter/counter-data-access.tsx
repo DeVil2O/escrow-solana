@@ -7,7 +7,7 @@ import { useCluster } from '@/components/cluster/cluster-data-access'
 import { useAnchorProvider } from '@/components/solana/use-anchor-provider'
 import { useTransactionToast } from '@/components/use-transaction-toast'
 import { toast } from 'sonner'
-import { BN } from '@coral-xyz/anchor'
+import { BN, web3 } from '@coral-xyz/anchor'
 
 export function useCounterProgram() {
   const { connection } = useConnection()
@@ -30,9 +30,15 @@ export function useCounterProgram() {
   const initialize = useMutation({
     mutationKey: ['escrow', 'initialize', { cluster }],
     mutationFn: (amount: number) => {
-      return program
-        .methods.initialize(new BN(amount))
-        .accounts({})
+      const [escrowPda] = PublicKey.findProgramAddressSync([Buffer.from('escrow')], program.programId)
+
+      return program.methods
+        .initialize(new BN(amount))
+        .accounts({
+          escrow: escrowPda,
+          payer: provider.wallet.publicKey,
+          systemProgram: web3.SystemProgram.programId,
+        })
         .rpc()
     },
     onSuccess: async (signature, amount) => {

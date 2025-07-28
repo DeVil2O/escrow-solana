@@ -6,13 +6,17 @@ import { useCounterProgram, useCounterProgramAccount } from './counter-data-acce
 export function CounterCreate() {
   const { initialize } = useCounterProgram()
 
-  return <Button onClick={() => initialize.mutateAsync(1000)} disabled={initialize.isPending}>
-    Create {initialize.isPending && '...'}
-  </Button>
+  return (
+    <Button onClick={() => initialize.mutateAsync(1000)} disabled={initialize.isPending}>
+      Create {initialize.isPending && '...'}
+    </Button>
+  )
 }
 
 export function CounterList() {
   const { accounts, getProgramAccount } = useCounterProgram()
+
+  console.log({ accounts })
 
   if (getProgramAccount.isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>
@@ -26,7 +30,7 @@ export function CounterList() {
   }
   return (
     <div className="flex flex-col gap-4">
-      <CounterCreate />
+      {/* <CounterCreate /> */}
       <div className="grid md:grid-cols-2 gap-4">
         {accounts.data?.map((account) => (
           <CounterCard key={account.publicKey.toString()} account={account.publicKey} />
