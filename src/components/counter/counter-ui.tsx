@@ -7,7 +7,7 @@ export function CounterCreate() {
   const { initialize } = useCounterProgram()
 
   return (
-    <Button onClick={() => initialize.mutateAsync(1000)} disabled={initialize.isPending}>
+    <Button onClick={() => initialize.mutateAsync(1)} disabled={initialize.isPending}>
       Create {initialize.isPending && '...'}
     </Button>
   )
